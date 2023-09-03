@@ -1,43 +1,42 @@
 # Compilador C++
-CC = g++
+CXX = g++
 
 # Flags de compilação
 CXXFLAGS = -Wall -pg -std=c++11 -I$(INC)
 
 # Diretórios
-SRC = src
-OBJ = obj
-BIN = bin
 INC = include
+BIN = bin
+OBJ = obj
+SRC = src
 
-# Arquivos de origem
-SRCS = $(SRC)/main.cpp $(SRC)/fatorial.cpp $(SRC)/fibonacci.cpp $(SRC)/tempo.cpp
+OBJS = $(OBJ)/fatorial.o $(OBJ)/fibonacci.o $(OBJ)/main.o $(OBJ)/utils.o
+HDRS = $(INC)/fatorial.hpp $(INC)/fibonacci.hpp $(INC)/msgassert.hpp $(INC)/tempo.hpp $(INC)/utils.hpp
 
-# Nomes dos objetos correspondentes
-OBJS = $(OBJ)/main.o $(OBJ)/fatorial.o $(OBJ)/fibonacci.o $(OBJ)/tempo.o
-
-# Nome do executável
 EXE = $(BIN)/main
 
-# Regra padrão
 all: $(EXE)
+	$(EXE)
 
-# Regra para compilar os objetos
-$(OBJ)/%.o: $(SRC)/%.cpp
-	$(CC) $(CFLAGS) -c $(OBJ)/%.o -o $(SRC)/%.cpp
-
-
-# Regra para o executável
-$(EXE): $(OBJS)
-	$(CC) -o $(EXE) $(OBJS) -pg
-
-# Regra para rodar o programa
 run: $(EXE)
-	./$(EXE) -h
-	./$(EXE) -f -n 5
-	./$(EXE) -b -n 5
+	$(EXE) -h
+	$(EXE) -f -n 5
+	$(EXE) -b -n 5
 
-# Regra para limpar arquivos gerados
+$(EXE): $(OBJS)
+	$(CXX) -pg -o $(EXE) $(OBJS) $(LIBS)
+
+$(OBJ)/fatorial.o: $(HDRS) $(SRC)/fatorial.cpp
+	$(CXX) $(CXXFLAGS) -o $(OBJ)/fatorial.o $(SRC)/fatorial.cpp
+
+$(OBJ)/fibonacci.o: $(HDRS) $(SRC)/fibonacci.cpp
+	$(CXX) $(CXXFLAGS) -o $(OBJ)/fibonacci.o $(SRC)/fibonacci.cpp
+
+$(OBJ)/utils.o: $(HDRS) $(SRC)/utils.cpp
+	$(CXX) $(CXXFLAGS) -o $(OBJ)/utils.o $(SRC)/utils.cpp
+
+$(OBJ)/main.o: $(HDRS) $(SRC)/main.cpp
+	$(CXX) $(CXXFLAGS) -o $(OBJ)/main.o $(SRC)/main.cpp
+
 clean:
-	rm -rf $(OBJ) $(BIN) gmon.out
-
+	rm -f $(EXE) $(OBJS) gmon.out
