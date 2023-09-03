@@ -2,7 +2,7 @@
 CC = g++
 
 # Flags de compilação
-CFLAGS = -Wall -pg -std=c++11 -Iinclude
+CXXFLAGS = -Wall -pg -std=c++11 -I$(INC)
 
 # Diretórios
 SRC = src
@@ -10,11 +10,11 @@ OBJ = obj
 BIN = bin
 INC = include
 
-# Arquivos fonte
-SRCS = $(wildcard $(SRC)/*.cpp)
+# Arquivos de origem
+SRCS = $(SRC)/main.cpp $(SRC)/fatorial.cpp $(SRC)/fibonacci.cpp $(SRC)/tempo.cpp
 
 # Nomes dos objetos correspondentes
-OBJS = $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRCS))
+OBJS = $(OBJ)/main.o $(OBJ)/fatorial.o $(OBJ)/fibonacci.o $(OBJ)/tempo.o
 
 # Nome do executável
 EXE = $(BIN)/main
@@ -24,17 +24,16 @@ all: $(EXE)
 
 # Regra para compilar os objetos
 $(OBJ)/%.o: $(SRC)/%.cpp
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $(OBJ)/%.o -o $(SRC)/%.cpp
 
 
 # Regra para o executável
 $(EXE): $(OBJS)
-	@mkdir -p $(@D)
 	$(CC) -o $(EXE) $(OBJS) -pg
 
 # Regra para rodar o programa
 run: $(EXE)
+	./$(EXE) -h
 	./$(EXE) -f -n 5
 	./$(EXE) -b -n 5
 
