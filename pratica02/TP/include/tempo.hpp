@@ -1,10 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include <ctime>
+#include <sys/time.h>
 #include <sys/resource.h>
 
-double userTime( struct rusage *start, struct rusage *end );
-double systemTime( struct rusage *start, struct rusage *end );
+double userTime();
+double systemTime();
 double clockTime ( struct timespec ti, struct timespec tf );
 

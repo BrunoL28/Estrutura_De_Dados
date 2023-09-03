@@ -2,7 +2,6 @@
 #include "../include/fibonacci.hpp"
 #include "../include/tempo.hpp"
 #include "../include/msgassert.hpp"
-#include "../include/utils.hpp"
 #include <getopt.h>
 
 static int opcaoEscolhida;
@@ -57,11 +56,12 @@ void parse_args( int argc, char **argv ) {
 
 int main ( int argc, char **argv ) {
 
-    struct rusage start, end;
     struct timespec ti, tf;
     parse_args( argc, argv );
     int resFatRecursivo, resFibRecursivo, resFatIterativo, resFibIterativo;
     double clockFatR, clockFatI, clockFibR, clockFibI;
+    double startTimeFatR, startTimeFatI, startTimeFibR, startTimeFibI, endTimeFatR, endTimeFatI, endTimeFibR, endTimeFibI;
+    double timeSystemFatR, timeSystemFatI, timeSystemFibR, timeSystemFibI, timeUserFatR, timeUserFatI, timeUserFibR, timeUserFibI;
 
     switch ( opcaoEscolhida ) {
 
@@ -70,36 +70,52 @@ int main ( int argc, char **argv ) {
             std::cout << std::endl << "Fatorial Recursivo" << std::endl;
 
             clock_gettime( CLOCK_MONOTONIC, &ti );
-            getrusage( RUSAGE_SELF, &start );
+
+            startTimeFatR = systemTime();
             resFatRecursivo = fatorialRecursivo( numeroEscolhido );
+            endTimeFatR = systemTime();
+            timeSystemFatR = endTimeFatR - startTimeFatR;
+
+            startTimeFatR = userTime();
+            resFatRecursivo = fatorialRecursivo( numeroEscolhido );
+            endTimeFatR = userTime();
+            timeUserFatR = endTimeFatR - startTimeFatR;
+
             clock_gettime( CLOCK_MONOTONIC, &tf );
-            getrusage( RUSAGE_SELF, &end );
 
             clockFatR = clockTime( ti, tf );
 
             std::cout << std::endl << "Fatorial, calculado de forma recursiva, de: " << numeroEscolhido << " eh: " << resFatRecursivo << std::endl;
 
             std::cout << std::endl << "Dados do fatorial recursivo: " << std::endl;
-            std::cout << std::endl << "Tempo de usuario: " << formatValue( userTime( &start, &end ), 7 ) << std::endl;
-            std::cout << std::endl << "Tempo de sistema: " << formatValue( systemTime( &start, &end ), 7 ) << std::endl;
-            std::cout << std::endl << "Tempo de relogio: " << formatValue( clockFatR, 7 ) << std::endl;
+            std::cout << std::endl << "Tempo de usuario: " << timeUserFatR << std::endl;
+            std::cout << std::endl << "Tempo de sistema: " << timeSystemFatR << std::endl;
+            std::cout << std::endl << "Tempo de relogio: " << clockFatR << std::endl;
 
             std::cout << std::endl << "Fatorial Iterativo" << std::endl;
 
             clock_gettime( CLOCK_MONOTONIC, &ti );
-            getrusage( RUSAGE_SELF, &start );
+
+            startTimeFatI = systemTime();
             resFatIterativo = fatorialIterativo( numeroEscolhido );
+            endTimeFatI = systemTime();
+            timeSystemFatI = endTimeFatI - startTimeFatI;
+
+            startTimeFatI = userTime();
+            resFatIterativo = fatorialIterativo( numeroEscolhido );
+            endTimeFatI = userTime();
+            timeUserFatI = endTimeFatI - startTimeFatI;
+
             clock_gettime( CLOCK_MONOTONIC, &tf );
-            getrusage( RUSAGE_SELF, &end );
 
             clockFatI = clockTime( ti, tf );
 
             std::cout << std::endl << "Fatorial, calculado de forma iterativa, de: " << numeroEscolhido << " eh: " << resFatIterativo << std::endl;
 
             std::cout << std::endl << "Dados do fatorial iterativo: " << std::endl;
-            std::cout << std::endl << "Tempo de usuario: " << formatValue( userTime( &start, &end ), 7 ) << std::endl;
-            std::cout << std::endl << "Tempo de sistema: " << formatValue( systemTime( &start, &end ), 7 ) << std::endl;
-            std::cout << std::endl << "Tempo de relogio: " << formatValue( clockFatI, 7 ) << std::endl;
+            std::cout << std::endl << "Tempo de usuario: " << timeUserFatI << std::endl;
+            std::cout << std::endl << "Tempo de sistema: " << timeSystemFatI << std::endl;
+            std::cout << std::endl << "Tempo de relogio: " << clockFatI << std::endl;
 
             break;
 
@@ -108,36 +124,53 @@ int main ( int argc, char **argv ) {
                 std::cout << std::endl << "Fibonacci Recursivo" << std::endl;
 
                 clock_gettime( CLOCK_MONOTONIC, &ti );
-                getrusage( RUSAGE_SELF, &start );
+
+                startTimeFibR = systemTime();
                 resFibRecursivo = fibonacciRecursivo( numeroEscolhido );
+                endTimeFibR = systemTime();
+                timeSystemFibR = endTimeFibR - startTimeFibR;
+
+                startTimeFibR = userTime();
+                resFibRecursivo = fibonacciRecursivo( numeroEscolhido );
+                endTimeFibR = userTime();
+                timeUserFibR = endTimeFibR - startTimeFibR;
+
                 clock_gettime( CLOCK_MONOTONIC, &tf );
-                getrusage( RUSAGE_SELF, &end );
 
                 clockFibR = clockTime( ti, tf );
 
                 std::cout << std::endl << "Fibonacci, calculado de forma recursiva, de: " << numeroEscolhido << " eh: " << resFibRecursivo << std::endl;
 
                 std::cout << std::endl << "Dados do fibonacci recursivo: " << std::endl;
-                std::cout << std::endl << "Tempo de usuario: " << formatValue( userTime( &start, &end ), 7 ) << std::endl;
-                std::cout << std::endl << "Tempo de sistema: " << formatValue( systemTime( &start, &end ), 7 ) << std::endl;
-                std::cout << std::endl << "Tempo de relogio: " << formatValue( clockFibR, 7 ) << std::endl;
+                std::cout << std::endl << "Tempo de usuario: " << timeUserFibR << std::endl;
+                std::cout << std::endl << "Tempo de sistema: " << timeSystemFibR << std::endl;
+                std::cout << std::endl << "Tempo de relogio: " << clockFibR << std::endl;
 
                 std::cout << std::endl << "Fibonacci Iterativo" << std::endl;
 
                 clock_gettime( CLOCK_MONOTONIC, &ti );
-                getrusage( RUSAGE_SELF, &start );
+
+                startTimeFibI = systemTime();
                 resFibIterativo = fibonacciIterativo( numeroEscolhido );
+                endTimeFibI = systemTime();
+                timeSystemFibI = endTimeFibI - startTimeFibI;
+
+                startTimeFibI = userTime();
+                resFibIterativo = fibonacciIterativo( numeroEscolhido );
+                endTimeFibI = userTime();
+                timeUserFibI = endTimeFibI - startTimeFibI;
+
                 clock_gettime( CLOCK_MONOTONIC, &tf );
-                getrusage( RUSAGE_SELF, &end );
+
 
                 clockFibI = clockTime( ti, tf );
                 
                 std::cout << std::endl << "Fibonacci, calculado de forma iterativa, de: " << numeroEscolhido << " eh: " << resFibIterativo << std::endl;
 
                 std::cout << std::endl << "Dados do fibonacci iterativo: " << std::endl;
-                std::cout << std::endl << "Tempo de usuario: " << formatValue( userTime( &start, &end ), 7 ) << std::endl;
-                std::cout << std::endl << "Tempo de sistema: " << formatValue( systemTime( &start, &end ), 7 ) << std::endl;
-                std::cout << std::endl << "Tempo de relogio: " << formatValue( clockFibI, 7 ) << std::endl;
+                std::cout << std::endl << "Tempo de usuario: " << timeUserFibI << std::endl;
+                std::cout << std::endl << "Tempo de sistema: " << timeSystemFibI << std::endl;
+                std::cout << std::endl << "Tempo de relogio: " << clockFibI << std::endl;
 
                 break;
 

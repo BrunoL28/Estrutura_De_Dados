@@ -7,9 +7,11 @@
  * @return double 
  */
 
-double userTime ( struct rusage *start, struct rusage *end ) {
-    return ( end->ru_utime.tv_sec - start->ru_utime.tv_sec ) +
-    1e-6 * ( end->ru_utime.tv_usec - start->ru_utime.tv_usec  );
+double userTime () {
+    struct rusage time;
+    getrusage( RUSAGE_SELF, &time );
+    double userTime = ( ( ( double )time.ru_utime.tv_sec + ( double )time.ru_utime.tv_usec ) / 1000000 );
+    return userTime;
 }
 
 /**
@@ -19,9 +21,11 @@ double userTime ( struct rusage *start, struct rusage *end ) {
  * @return double 
  */
 
-double systemTime ( struct rusage *start, struct rusage *end ) {
-    return ( end->ru_stime.tv_sec - start->ru_stime.tv_sec ) + 
-    1e-6 * ( end->ru_stime.tv_usec - start->ru_stime.tv_usec );
+double systemTime () {
+    struct rusage time;
+    getrusage( RUSAGE_SELF, &time );
+    double systemTime = ( ( ( double )time.ru_stime.tv_sec + ( double )time.ru_stime.tv_usec ) / 1000000 );
+    return systemTime;
 }
 
 /**
