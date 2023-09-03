@@ -45,6 +45,7 @@ void parse_args( int argc, char **argv ) {
                 std::cout << "-f => Executa as funcoes relacionadas ao fatorial." << std::endl;
                 std::cout << "-b => Executa as funcoes relacionadas ao fibonacci." << std::endl;
                 std::cout << "-n => Escolhe um numero para exectar as operacoes." << std::endl;
+                break;
 
             default:
                 std::cerr << "A opcao: " << optopt << "eh invalida ou ausente." << std::endl;
