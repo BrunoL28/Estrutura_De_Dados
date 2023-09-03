@@ -1,5 +1,5 @@
-#include "mat.h"
-#include "msgassert.h"
+#include "../include/mat.h"
+#include "../include/msgassert.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>

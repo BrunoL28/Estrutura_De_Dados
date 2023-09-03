@@ -2,8 +2,8 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "mat.h"
-#include "msgassert.h"
+#include "../include/mat.h"
+#include "../include/msgassert.h"
 
 // definicoes de operacoes a serem testadas
 #define OPSOMAR 1
