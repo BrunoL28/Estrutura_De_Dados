@@ -1,0 +1,72 @@
+1) O problema no código em questão, se dá pelo fato a variável "a" estar sendo declarada, na main, dentro 
+do loop. Isso significa que a cada iteração que ocorrer, essa variável será re-inicializada como 1, e a 
+função inc() vai fazer com que ela seja sempre 2, em todas as iterações.
+
+2) Para aferir se o que foi pontuado acima está correto, vamos rodar o gdb no código incorreto
+
+(gdb) break 8
+Breakpoint 1 at 0x113c: file c15.c, line 8.
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c15.exe 
+
+Breakpoint 1, main (argc=21845, argv=0x0) at c15.c:8
+8       int main(int argc, char** argv) {
+(gdb) next
+9         for(int i=1; i < 5; i++) {
+(gdb) next
+10           int a = 1;
+(gdb) display a
+1: a = 0
+(gdb) next
+11           a = inc(a);
+1: a = 1
+(gdb) next
+9         for(int i=1; i < 5; i++) {
+(gdb) next
+10           int a = 1;
+1: a = 2
+(gdb) next
+11           a = inc(a);
+1: a = 1
+(gdb) next
+9         for(int i=1; i < 5; i++) {
+(gdb) next
+10           int a = 1;
+1: a = 2
+
+3) Agora, para fazer a correção do programa, iremos apenas remover a inicialização da variável "a" do 
+loop.
+
+4) Executando o gdb no código corrigido, para ver se o problema foi solucionado.
+
+(gdb) break 8
+Breakpoint 1 at 0x113c: file c15correto.c, line 8.
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c15correto.exe 
+
+Breakpoint 1, main (argc=21845, argv=0x0) at c15correto.c:8
+8       int main(int argc, char** argv) {
+(gdb) print a
+$1 = 0
+(gdb) next
+9         int a = 1;
+(gdb) next
+10        for(int i=1; i < 5; i++) {
+(gdb) next
+11           a = inc(a);
+(gdb) next
+10        for(int i=1; i < 5; i++) {
+(gdb) print a
+$2 = 2
+(gdb) next
+11           a = inc(a);
+(gdb) next
+10        for(int i=1; i < 5; i++) {
+(gdb) print a
+$3 = 3
+(gdb) next
+11           a = inc(a);
+(gdb) next
+10        for(int i=1; i < 5; i++) {
+(gdb) print a
+$4 = 4
