@@ -1,0 +1,140 @@
+1) No código em questão, o problema é que alocamos 8 bytes para msg, e no parâmetro da função strcopy
+a string passada possui 9 caracteres (9 bytes). Ademais, ainda não foi contabilizado o byte necessário
+para o "\0", que declara que aquele array de char foi finalizado. Com isso, o limite de memória alocada
+para msg é excedido. Outro problema do código é a ausência da função free() para fazer a liberação da 
+memória alocada.
+
+2) Vamos executar o gdb para ter uma ideia de como a execução ocorre a partir do nono byte.
+
+(gdb) break 10
+Breakpoint 1 at 0x11c1: file c11.c, line 10.
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c11.exe 
+
+Breakpoint 1, main () at c11.c:10
+10          printf("%ld, %s\n", (long)getpid(), msg);
+(gdb) print msg[0]
+$1 = 82 'R'
+(gdb) print msg[1]
+$2 = 111 'o'
+(gdb) print msg[2]
+$3 = 108 'l'
+(gdb) print msg[3]
+$4 = 98 'b'
+(gdb) print msg[4]
+$5 = 101 'e'
+(gdb) print msg[5]
+$6 = 114 'r'
+(gdb) print msg[6]
+$7 = 116 't'
+(gdb) print msg[7]
+$8 = 111 'o'
+(gdb) print msg[8]
+$9 = 110 'n'
+(gdb) print msg[9]
+$10 = 0 '\000'
+
+Vamos executar também o Valgrind para ver quais informações obtemos de lá
+
+valgrind --leak-check=full ./c11.exe 
+
+==6254== Invalid write of size 2
+==6254==    at 0x1091B4: main (c11.c:8)
+==6254==  Address 0x4a48048 is 0 bytes after a block of size 8 alloc'd
+==6254==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x10919E: main (c11.c:7)
+==6254== 
+==6254== Invalid read of size 1
+==6254==    at 0x483EF54: strlen (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x48CBD14: __vfprintf_internal (vfprintf-internal.c:1688)
+==6254==    by 0x48B4D3E: printf (printf.c:33)
+==6254==    by 0x1091DF: main (c11.c:10)
+==6254==  Address 0x4a48048 is 0 bytes after a block of size 8 alloc'd
+==6254==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x10919E: main (c11.c:7)
+==6254== 
+==6254== Invalid read of size 1
+==6254==    at 0x48E270C: _IO_new_file_xsputn (fileops.c:1219)
+==6254==    by 0x48E270C: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+==6254==    by 0x48CA0FB: __vfprintf_internal (vfprintf-internal.c:1688)
+==6254==    by 0x48B4D3E: printf (printf.c:33)
+==6254==    by 0x1091DF: main (c11.c:10)
+==6254==  Address 0x4a48048 is 0 bytes after a block of size 8 alloc'd
+==6254==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x10919E: main (c11.c:7)
+==6254== 
+==6254== Invalid read of size 1
+==6254==    at 0x48436A0: mempcpy (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x48E2631: _IO_new_file_xsputn (fileops.c:1236)
+==6254==    by 0x48E2631: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+==6254==    by 0x48CA0FB: __vfprintf_internal (vfprintf-internal.c:1688)
+==6254==    by 0x48B4D3E: printf (printf.c:33)
+==6254==    by 0x1091DF: main (c11.c:10)
+==6254==  Address 0x4a48048 is 0 bytes after a block of size 8 alloc'd
+==6254==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x10919E: main (c11.c:7)
+==6254== 
+6254, Rolberton
+==6254== 
+==6254== HEAP SUMMARY:
+==6254==     in use at exit: 8 bytes in 1 blocks
+==6254==   total heap usage: 2 allocs, 1 frees, 1,032 bytes allocated
+==6254== 
+==6254== 8 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==6254==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6254==    by 0x10919E: main (c11.c:7)
+==6254== 
+==6254== LEAK SUMMARY:
+==6254==    definitely lost: 8 bytes in 1 blocks
+==6254==    indirectly lost: 0 bytes in 0 blocks
+==6254==      possibly lost: 0 bytes in 0 blocks
+==6254==    still reachable: 0 bytes in 0 blocks
+==6254==         suppressed: 0 bytes in 0 blocks
+==6254==
+==6254== ERROR SUMMARY: 7 errors from 5 contexts (suppressed: 0 from 0)
+
+3) Para corrigir esses problemas, indicados no tópico 1 e demonstrados na prática no tópico 2 pelo
+gdb e pelo Valgrind, vamos alocar mais bytes para o ponteiro msg, e vamos também realizar a liberação
+da memória ao fim da execução do código.
+
+4) Executando o gdb no código corrigido, percebemos que deu tudo certo nessa nova versão.
+
+(gdb) break 10
+Breakpoint 1 at 0x11e1: file c11correto.c, line 10.
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c11correto.exe 
+
+Breakpoint 1, main () at c11correto.c:10
+10          printf("%ld, %s\n", (long)getpid(), msg);
+(gdb) print msg[0]
+$1 = 82 'R'
+(gdb) print msg[1]
+$2 = 111 'o'
+(gdb) print msg[2]
+$3 = 108 'l'
+(gdb) print msg[3]
+$4 = 98 'b'
+(gdb) print msg[4]
+$5 = 101 'e'
+(gdb) print msg[5]
+$6 = 114 'r'
+(gdb) print msg[6]
+$7 = 116 't'
+(gdb) print msg[7]
+$8 = 111 'o'
+(gdb) print msg[8]
+$9 = 110 'n'
+(gdb) print msg[9]
+$10 = 0 '\000'
+
+Executando o Valgrind no código corrigido 
+
+valgrind --leak-check=full ./c11correto.c 
+
+==7121== HEAP SUMMARY:
+==7121==     in use at exit: 0 bytes in 0 blocks
+==7121==   total heap usage: 2 allocs, 2 frees, 1,034 bytes allocated
+==7121== 
+==7121== All heap blocks were freed -- no leaks are possible
+==7121==
+==7121== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
