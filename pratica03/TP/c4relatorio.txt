@@ -1,0 +1,75 @@
+1) No código em questão, o problema está em tentar acessar posições de memória sem ter antes alocado espaço
+para esse acesso. Nesse caso, é necessário antes alocar memória para a struct Matrix, e depois atribuir 
+valores para rows, cols e data. Além disso, também está ocorrendo uma liberação de memória desnecessária 
+para a variável text, levando em consideração que ela não foi alocada dinamicamente.
+
+2) Executando gdb para verificar o código incorreto
+
+gdb ./c4.exe 
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c4.exe 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555517a in main () at c4.c:16
+16        rotation3D->rows=4;            
+(gdb) display rotation3D->rows
+1: rotation3D->rows = <error: Cannot access memory at address 0x0>
+(gdb) continue
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+
+Executando valgrind para verificar o código incorreto
+
+valgrind --leak-check=full ./c4.exe
+
+==16395== Use of uninitialised value of size 8
+==16395==    at 0x10917A: main (c4.c:16)
+==16395== 
+==16395== Invalid write of size 4
+==16395==    at 0x10917A: main (c4.c:16)
+==16395==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==16395== 
+==16395== 
+==16395== Process terminating with default action of signal 11 (SIGSEGV)
+==16395==  Access not within mapped region at address 0x0
+==16395==    at 0x10917A: main (c4.c:16)
+==16395==  If you believe this happened as a result of a stack
+==16395==  overflow in your program's main thread (unlikely but
+==16395==  possible), you can try to increase the size of the
+==16395==  main thread stack using the --main-stacksize= flag.
+==16395==  The main thread stack size used in this run was 8388608.
+==16395== 
+==16395== HEAP SUMMARY:
+==16395==     in use at exit: 0 bytes in 0 blocks
+==16395==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==16395== 
+==16395== All heap blocks were freed -- no leaks are possible
+==16395==
+==16395== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+Segmentation fault
+
+3) Para corrigir o código, basta alocar, dinamicamente, memória para rotation3D, antes de iniciar suas 
+variáveis. Ademais, devemos retirar a liberação de memória para text.
+
+4) Executando o gdb após corrigir o código 
+
+gdb ./c4correto.exe
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c4correto.exe 
+[Inferior 1 (process 17545) exited normally]
+
+Executando o valgrind após corrigir o código
+
+valgrind --leak-check=full ./c4correto.exe 
+
+==17679== HEAP SUMMARY:
+==17679==     in use at exit: 0 bytes in 0 blocks
+==17679==   total heap usage: 6 allocs, 6 frees, 112 bytes allocated
+==17679== 
+==17679== All heap blocks were freed -- no leaks are possible
+==17679==
+==17679== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
