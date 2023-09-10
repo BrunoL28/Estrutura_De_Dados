@@ -1,0 +1,40 @@
+1) O problema no código em questão gira em torno do terminador nulo "/0". Essa representação serve para 
+indicar ao sistema operacional que aquele é o fim de uma string ( a string nada mais é que uma array de
+char ). Assim, o terminador nulo ocupa a última posição do array de char, e isso não foi considerado no
+código. Daí surge o problema, já que o for itera 26 vezes, vinculando um endereço de memória de alphabet 
+a um número, o que significa que, para tudo ocorrer bem, alphabet precisa de 27 bytes alocados, sendo 26 
+para as letras do alfabeto, e 1 para o terminador nulo. Como a alocação dinâmica de alphabet foi feita 
+com apenas 26 bytes, ocorre o erro.
+
+2) Executando o Valgrind no código incorreto, para ver os problemas 
+
+valgrind --leak-check=full ./c7.exe 
+
+==23516== Invalid write of size 1
+==23516==    at 0x1091BC: main (c7.c:10)
+==23516==  Address 0x4a4805a is 0 bytes after a block of size 26 alloc'd
+==23516==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==23516==    by 0x109183: main (c7.c:5)
+==23516== 
+==23516== 
+==23516== HEAP SUMMARY:
+==23516==     in use at exit: 0 bytes in 0 blocks
+==23516==   total heap usage: 1 allocs, 1 frees, 26 bytes allocated
+==23516== 
+==23516== All heap blocks were freed -- no leaks are possible
+==23516==
+==23516== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+3) Para corrigir o problema, basta alocar alphabet com 27 bytes, ao invés de 26.
+
+4) Executando o Valgrind no código corregido, para ver se os problemas foram sanados 
+
+valgrind --leak-check=full ./c7correto.exe 
+
+==25314== HEAP SUMMARY:
+==25314==     in use at exit: 0 bytes in 0 blocks
+==25314==   total heap usage: 1 allocs, 1 frees, 27 bytes allocated
+==25314== 
+==25314== All heap blocks were freed -- no leaks are possible
+==25314==
+==25314== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
