@@ -1,0 +1,44 @@
+1) O problema no código em questão, é que alocamos memória dinamicamente três vezes e só fazemos a 
+liberação dessa memória uma vez. Isso implica em vazamento de memória.
+
+2) Executando o Valgrind para aferir se a afirmação do tópico 1 está correta
+
+valgrind --leak-check=full ./c13.exe 
+
+==9375== HEAP SUMMARY:
+==9375==     in use at exit: 35 bytes in 2 blocks
+==9375==   total heap usage: 3 allocs, 1 frees, 47 bytes allocated
+==9375== 
+==9375== 16 bytes in 1 blocks are definitely lost in loss record 1 of 2
+==9375==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9375==    by 0x1091A6: main (c13.c:11)
+==9375== 
+==9375== 19 bytes in 1 blocks are definitely lost in loss record 2 of 2
+==9375==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9375==    by 0x10917E: main (c13.c:8)
+==9375== 
+==9375== LEAK SUMMARY:
+==9375==    definitely lost: 35 bytes in 2 blocks
+==9375==    indirectly lost: 0 bytes in 0 blocks
+==9375==      possibly lost: 0 bytes in 0 blocks
+==9375==    still reachable: 0 bytes in 0 blocks
+==9375==         suppressed: 0 bytes in 0 blocks
+==9375==
+==9375== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+
+Percebemos um vazamento de ( 19 + 16 )bytes, resultando em 35 bytes de memória ocupada por execução.
+
+3) Para corrigir o problema, basta executar a liberação de memória para as três alocações dinâmicas 
+que foram realizadas.
+
+4) Executando o Valgrind após a correção, para conferir se não temos mais problemas
+
+valgrind --leak-check=full ./c13correto.exe 
+
+==9573== HEAP SUMMARY:
+==9573==     in use at exit: 0 bytes in 0 blocks
+==9573==   total heap usage: 3 allocs, 3 frees, 47 bytes allocated
+==9573== 
+==9573== All heap blocks were freed -- no leaks are possible
+==9573==
+==9573== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
