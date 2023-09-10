@@ -3,21 +3,20 @@ Flat profile:
 Each sample counts as 0.01 seconds.
   %   cumulative   self              self     total           
  time   seconds   seconds    calls  ms/call  ms/call  name    
- 97.71      1.37     1.37        2   683.99   683.99  fibonacciRecursivo(int)
-  2.51      1.40     0.04                             frame_dummy
-  0.00      1.40     0.00        4     0.00     0.00  systemTime()
-  0.00      1.40     0.00        4     0.00     0.00  userTime()
-  0.00      1.40     0.00        2     0.00     0.00  fibonacciIterativo(int)
-  0.00      1.40     0.00        2     0.00     0.00  clockTime(timespec, timespec)
-  0.00      1.40     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z17fatorialRecursivoi
-  0.00      1.40     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z18fibonacciRecursivoi
-  0.00      1.40     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z8userTimev
-  0.00      1.40     0.00        1     0.00     0.00  _GLOBAL__sub_I_numeroEscolhido
-  0.00      1.40     0.00        1     0.00     0.00  parse_args(int, char**)
-  0.00      1.40     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
-  0.00      1.40     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
-  0.00      1.40     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
-  0.00      1.40     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+ 93.57      1.69     1.69        2   846.85   846.85  fibonacciRecursivo(int)
+  6.64      1.81     0.12        1   120.26   120.26  _GLOBAL__sub_I__Z17fatorialRecursivoi
+  0.00      1.81     0.00        4     0.00     0.00  systemTime()
+  0.00      1.81     0.00        4     0.00     0.00  userTime()
+  0.00      1.81     0.00        2     0.00     0.00  fibonacciIterativo(int)
+  0.00      1.81     0.00        2     0.00     0.00  clockTime(timespec, timespec)
+  0.00      1.81     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z18fibonacciRecursivoi
+  0.00      1.81     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z8userTimev
+  0.00      1.81     0.00        1     0.00     0.00  _GLOBAL__sub_I_numeroEscolhido
+  0.00      1.81     0.00        1     0.00     0.00  parse_args(int, char**)
+  0.00      1.81     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      1.81     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      1.81     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      1.81     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -55,68 +54,72 @@ notice and this notice are preserved.
 		     Call graph (explanation follows)
 
 
-granularity: each sample hit covers 2 byte(s) for 0.71% of 1.40 seconds
+granularity: each sample hit covers 2 byte(s) for 0.55% of 1.81 seconds
 
 index % time    self  children    called     name
                                                  <spontaneous>
-[1]     97.5    0.00    1.37                 main [1]
-                1.37    0.00       2/2           fibonacciRecursivo(int) [2]
-                0.00    0.00       4/4           systemTime() [9]
-                0.00    0.00       4/4           userTime() [10]
-                0.00    0.00       2/2           clockTime(timespec, timespec) [12]
-                0.00    0.00       2/2           fibonacciIterativo(int) [11]
-                0.00    0.00       1/1           parse_args(int, char**) [17]
+[1]     93.4    0.00    1.69                 main [1]
+                1.69    0.00       2/2           fibonacciRecursivo(int) [2]
+                0.00    0.00       4/4           systemTime() [11]
+                0.00    0.00       4/4           userTime() [12]
+                0.00    0.00       2/2           clockTime(timespec, timespec) [14]
+                0.00    0.00       2/2           fibonacciIterativo(int) [13]
+                0.00    0.00       1/1           parse_args(int, char**) [18]
 -----------------------------------------------
                              409336616             fibonacciRecursivo(int) [2]
-                1.37    0.00       2/2           main [1]
-[2]     97.5    1.37    0.00       2+409336616 fibonacciRecursivo(int) [2]
+                1.69    0.00       2/2           main [1]
+[2]     93.4    1.69    0.00       2+409336616 fibonacciRecursivo(int) [2]
                              409336616             fibonacciRecursivo(int) [2]
 -----------------------------------------------
-                                                 <spontaneous>
-[3]      2.5    0.04    0.00                 frame_dummy [3]
------------------------------------------------
-                0.00    0.00       4/4           main [1]
-[9]      0.0    0.00    0.00       4         systemTime() [9]
------------------------------------------------
-                0.00    0.00       4/4           main [1]
-[10]     0.0    0.00    0.00       4         userTime() [10]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[11]     0.0    0.00    0.00       2         fibonacciIterativo(int) [11]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[12]     0.0    0.00    0.00       2         clockTime(timespec, timespec) [12]
------------------------------------------------
-                0.00    0.00       1/1           __libc_csu_init [28]
-[13]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z17fatorialRecursivoi [13]
-                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [20]
------------------------------------------------
-                0.00    0.00       1/1           __libc_csu_init [28]
-[14]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z18fibonacciRecursivoi [14]
-                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [18]
------------------------------------------------
-                0.00    0.00       1/1           __libc_csu_init [28]
-[15]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z8userTimev [15]
+                0.12    0.00       1/1           __libc_csu_init [4]
+[3]      6.6    0.12    0.00       1         _GLOBAL__sub_I__Z17fatorialRecursivoi [3]
                 0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [19]
 -----------------------------------------------
-                0.00    0.00       1/1           __libc_csu_init [28]
-[16]     0.0    0.00    0.00       1         _GLOBAL__sub_I_numeroEscolhido [16]
+                                                 <spontaneous>
+[4]      6.6    0.00    0.12                 __libc_csu_init [4]
+                0.12    0.00       1/1           _GLOBAL__sub_I__Z17fatorialRecursivoi [3]
+                0.00    0.00       1/1           _GLOBAL__sub_I_numeroEscolhido [17]
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z8userTimev [16]
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z18fibonacciRecursivoi [15]
+-----------------------------------------------
+                0.00    0.00       4/4           main [1]
+[11]     0.0    0.00    0.00       4         systemTime() [11]
+-----------------------------------------------
+                0.00    0.00       4/4           main [1]
+[12]     0.0    0.00    0.00       4         userTime() [12]
+-----------------------------------------------
+                0.00    0.00       2/2           main [1]
+[13]     0.0    0.00    0.00       2         fibonacciIterativo(int) [13]
+-----------------------------------------------
+                0.00    0.00       2/2           main [1]
+[14]     0.0    0.00    0.00       2         clockTime(timespec, timespec) [14]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [4]
+[15]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z18fibonacciRecursivoi [15]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [20]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [4]
+[16]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z8userTimev [16]
                 0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [21]
 -----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [4]
+[17]     0.0    0.00    0.00       1         _GLOBAL__sub_I_numeroEscolhido [17]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [22]
+-----------------------------------------------
                 0.00    0.00       1/1           main [1]
-[17]     0.0    0.00    0.00       1         parse_args(int, char**) [17]
+[18]     0.0    0.00    0.00       1         parse_args(int, char**) [18]
 -----------------------------------------------
-                0.00    0.00       1/1           _GLOBAL__sub_I__Z18fibonacciRecursivoi [14]
-[18]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [18]
------------------------------------------------
-                0.00    0.00       1/1           _GLOBAL__sub_I__Z8userTimev [15]
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z17fatorialRecursivoi [3]
 [19]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [19]
 -----------------------------------------------
-                0.00    0.00       1/1           _GLOBAL__sub_I__Z17fatorialRecursivoi [13]
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z18fibonacciRecursivoi [15]
 [20]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [20]
 -----------------------------------------------
-                0.00    0.00       1/1           _GLOBAL__sub_I_numeroEscolhido [16]
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z8userTimev [16]
 [21]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [21]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I_numeroEscolhido [17]
+[22]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [22]
 -----------------------------------------------
 
  This table describes the call tree of the program, and was sorted by
@@ -209,8 +212,8 @@ notice and this notice are preserved.
 
 Index by function name
 
-  [13] _GLOBAL__sub_I__Z17fatorialRecursivoi [9] systemTime() [20] __static_initialization_and_destruction_0(int, int)
-  [14] _GLOBAL__sub_I__Z18fibonacciRecursivoi [11] fibonacciIterativo(int) [21] __static_initialization_and_destruction_0(int, int)
-  [15] _GLOBAL__sub_I__Z8userTimev [2] fibonacciRecursivo(int) [10] userTime()
-  [16] _GLOBAL__sub_I_numeroEscolhido [18] __static_initialization_and_destruction_0(int, int) [12] clockTime(timespec, timespec)
-  [17] parse_args(int, char**) [19] __static_initialization_and_destruction_0(int, int) [3] frame_dummy
+   [3] _GLOBAL__sub_I__Z17fatorialRecursivoi [11] systemTime() [21] __static_initialization_and_destruction_0(int, int)
+  [15] _GLOBAL__sub_I__Z18fibonacciRecursivoi [13] fibonacciIterativo(int) [22] __static_initialization_and_destruction_0(int, int)
+  [16] _GLOBAL__sub_I__Z8userTimev [2] fibonacciRecursivo(int) [12] userTime()
+  [17] _GLOBAL__sub_I_numeroEscolhido [19] __static_initialization_and_destruction_0(int, int) [14] clockTime(timespec, timespec)
+  [18] parse_args(int, char**) [20] __static_initialization_and_destruction_0(int, int)
