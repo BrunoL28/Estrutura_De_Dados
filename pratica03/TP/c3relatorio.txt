@@ -1,0 +1,40 @@
+1) No código em questão, temos uma alocação de memória em um laço for, que itera dez vezes. Isso significa
+que a memória é alocada dinamicamente por dez vezes, mas é desalocada apenas uma, através da função free. 
+Nesse sentido, fica memória alocada sem estar sendo utilizada, gerando um extrapolamento / leak de memória.
+
+2) Executando o valgrind para verificar o código incorreto
+
+valgrind --leak-check=full ./c3.exe 
+
+==9218== HEAP SUMMARY:
+==9218==     in use at exit: 3,600 bytes in 9 blocks
+==9218==   total heap usage: 10 allocs, 1 frees, 4,000 bytes allocated ( Atenção para essa linha )
+==9218== 
+==9218== 3,600 bytes in 9 blocks are definitely lost in loss record 1 of 1
+==9218==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9218==    by 0x10918E: main (c3.c:9)
+==9218== 
+==9218== LEAK SUMMARY:
+==9218==    definitely lost: 3,600 bytes in 9 blocks
+==9218==    indirectly lost: 0 bytes in 0 blocks
+==9218==      possibly lost: 0 bytes in 0 blocks
+==9218==    still reachable: 0 bytes in 0 blocks
+==9218==         suppressed: 0 bytes in 0 blocks
+==9218==
+==9218== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+3) Para corrigir o código, basta incluir a operação free, que libera a memória que foi alocada dinamicamente,
+dentro do for. Dessa forma, toda vez que o escopo do laço for executado, ele terá uma alocação seguida de 
+uma liberação de memória.
+
+4) Executando o valgrind após corrigir o código 
+
+valgrind --leak-check=full ./c3correto.exe 
+
+==10267== HEAP SUMMARY:
+==10267==     in use at exit: 0 bytes in 0 blocks
+==10267==   total heap usage: 10 allocs, 10 frees, 4,000 bytes allocated ( correção do problema )
+==10267== 
+==10267== All heap blocks were freed -- no leaks are possible
+==10267==
+==10267== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
