@@ -1,0 +1,55 @@
+1) O problema no código em questão, está no fato de que na função resizeArray é criado um ponteiro que, de 
+início aponta para o atributo data, da struct _List. Na mesma função, o ponteiro é realocado para um bloco
+diferente de memória, contudo array->data não recebe atualização para o novo bloco de memória. E isso implica
+que, necessariamente, array->data irá apontar para o bloco antigo de memória, mesmo após a realocação de dPtr.
+
+2) Executando o valgrind para verificar os problemas do código
+
+valgrind --check-leak=full ./c6.exe 
+
+==20694== Invalid free() / delete / delete[] / realloc()
+==20694==    at 0x483CA3F: free (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==20694==    by 0x109215: main (c6.c:21)
+==20694==  Address 0x4a48090 is 0 bytes inside a block of size 40 free'd
+==20694==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==20694==    by 0x1091B4: resizeArray (c6.c:12)
+==20694==    by 0x109202: main (c6.c:19)
+==20694==  Block was alloc'd at
+==20694==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==20694==    by 0x1091EC: main (c6.c:18)
+==20694== 
+==20694== 
+==20694== HEAP SUMMARY:
+==20694==     in use at exit: 60 bytes in 1 blocks
+==20694==   total heap usage: 3 allocs, 3 frees, 116 bytes allocated
+==20694== 
+==20694== 60 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==20694==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==20694==    by 0x1091B4: resizeArray (c6.c:12)
+==20694==    by 0x109202: main (c6.c:19)
+==20694== 
+==20694== LEAK SUMMARY:
+==20694==    definitely lost: 60 bytes in 1 blocks
+==20694==    indirectly lost: 0 bytes in 0 blocks
+==20694==      possibly lost: 0 bytes in 0 blocks
+==20694==    still reachable: 0 bytes in 0 blocks
+==20694==         suppressed: 0 bytes in 0 blocks
+==20694==
+==20694== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+
+3) A correção consiste em garantir que array->data seja atualizado de forma correta após a realocação de
+memória. É importante também verificar se dPtr não é nulo, pois isso garante que a operação de realocação
+foi realizada com sucesso.
+
+4) Executando o valgrind no código correto, para ver se os problemas foram sanados
+
+valgrind --leak-check=full ./c6correto.exe 
+
+==22630== HEAP SUMMARY:
+==22630==     in use at exit: 0 bytes in 0 blocks
+==22630==   total heap usage: 3 allocs, 3 frees, 116 bytes allocated
+==22630== 
+==22630== All heap blocks were freed -- no leaks are possible
+==22630== 
+==22630== For lists of detected and suppressed errors, rerun with: -s
+==22630== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
