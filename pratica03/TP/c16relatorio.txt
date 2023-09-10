@@ -1,0 +1,52 @@
+1) No programa em questão, o problema está na função calc, na sua chamada para a função actual_calc. Isso
+se dá, porque a variável b, declarada e inicializada como 0 pela função calc, acaba se tornando o divisor
+no parâmetro da função actual_calc, o que traz problemas levando em consideração que a divisão por 0 não
+está definida.
+
+2) Executando o Valgrind no código incorreto, para verificar se a afirmação acima faz sentido
+
+valgrind --leak-check=full ./c16.exe 
+
+==14487== Process terminating with default action of signal 8 (SIGFPE)
+==14487==  Integer divide by zero at address 0x1002D47EFF
+==14487==    at 0x10913B: actual_calc (c16.c:6)
+==14487==    by 0x109170: calc (c16.c:15)
+==14487==    by 0x109189: main (c16.c:20)
+==14487== 
+==14487== HEAP SUMMARY:
+==14487==     in use at exit: 0 bytes in 0 blocks
+==14487==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==14487== 
+==14487== All heap blocks were freed -- no leaks are possible
+==14487==
+==14487== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Floating point exception
+
+Ele não declara erro, mas dá um warning. Enquanto isso, o gdb demonstra o problema de forma mais clara 
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c16.exe 
+
+Program received signal SIGFPE, Arithmetic exception.
+0x000055555555513b in actual_calc (a=13, b=0) at c16.c:6
+6         c=a/b;
+
+3) Para corrigir o problema, basta tratar, na função actual_calc, o erro quando se tenta dividir algum
+número por 0.
+
+4) Executando o Valgrind e gdb após corrigir o código 
+
+valgrind --leak-check=full ./c16correto.exe 
+
+A divisão por zero é indefinida.==15345== 
+==15345== HEAP SUMMARY:
+==15345==     in use at exit: 0 bytes in 0 blocks
+==15345==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==15345== 
+==15345== All heap blocks were freed -- no leaks are possible
+==15345==
+==15345== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c16correto.exe 
+A divisão por zero é indefinida.[Inferior 1 (process 15269) exited normally]
