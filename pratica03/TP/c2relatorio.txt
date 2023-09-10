@@ -1,0 +1,33 @@
+1) O código em questão cria um vetor de 10 posições e, logo em seguida, popula esse vetor iterando suas 
+posições e preenchendo elas com o valor da variável de iteração ( i ). Contudo, nesse for que popula o 
+vetor, o laço vai apenas até a penúltma variável, não iniciando a posição a[10] do vetor. Isso implica que,
+no segundo laço, onde ocorre a impressão das posições desse vetor, ocorra a tentativa de acesso a uma 
+posição que não foi inicializada.
+
+2) Executando o valgrind no código incorreto, confirmamos o que foi falado acima.
+
+valgrind --leak-check=full ./c2.exe
+
+==7747== Conditional jump or move depends on uninitialised value(s)
+==7747==    at 0x48CA958: __vfprintf_internal (vfprintf-internal.c:1687)
+==7747==    by 0x48B4D3E: printf (printf.c:33)
+==7747==    by 0x1091EE: main (c2.c:11)
+==7747==
+==7747== HEAP SUMMARY:
+==7747==     in use at exit: 0 bytes in 0 blocks
+==7747==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+
+3) Para corrigir o código, basta alterar o limite de iterações, que está em ( i < 9 ) para ( i < 10 ). Isso 
+faz com que todas as posições do vetor sejam inicializadas e, consequentemente, populadas.
+
+4) Executando o valgrind para verificar se o código foi corrigido
+
+valgrind --leak-check=full ./c2correto.exe 
+
+==8471== HEAP SUMMARY:
+==8471==     in use at exit: 0 bytes in 0 blocks
+==8471==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==8471== 
+==8471== All heap blocks were freed -- no leaks are possible
+==8471==
+==8471== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
