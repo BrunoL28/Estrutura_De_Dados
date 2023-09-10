@@ -1,0 +1,37 @@
+1) O problema no código é o fato de a variável x ser declarada, mas não ser inicializada com nenhum valor.
+Isso pode gerar problemas no código, porque permite que a variável tenha um comportamento imprevisível.
+
+2) Executando o Valgrind para verificar o que foi dito no tópico 1
+
+valgrind --leak-check=full --track-origins=yes ./c12.exe 
+
+==7859== Conditional jump or move depends on uninitialised value(s)
+==7859==    at 0x109159: main (c12.c:6)
+==7859==  Uninitialised value was created by a stack allocation
+==7859==    at 0x109149: main (c12.c:4)
+==7859== 
+X is zero
+==7859== 
+==7859== HEAP SUMMARY:
+==7859==     in use at exit: 0 bytes in 0 blocks
+==7859==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==7859== 
+==7859== All heap blocks were freed -- no leaks are possible
+==7859==
+==7859== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+3) Para corrigir esse problema, basta inicializar o x com um valor. Nesse caso, testaremos 0.
+
+4) Executando o Valgrind para verificar se o problema foi solucionado
+
+valgrind --leak-check=full --track-origins=yes ./c12correto.exe 
+
+X is zero
+==8261== 
+==8261== HEAP SUMMARY:
+==8261==     in use at exit: 0 bytes in 0 blocks
+==8261==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==8261== 
+==8261== All heap blocks were freed -- no leaks are possible
+==8261==
+==8261== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
