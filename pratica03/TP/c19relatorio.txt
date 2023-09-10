@@ -1,0 +1,87 @@
+1) O problema aqui, está no fato de o ponteiro buf ser declarado mas não ser inicializado. Isso dá problema
+quando, na função printSum() o ponteiro é chamado, através do método sprintf para que a soma seja gravada 
+nesse buffer(buf). Como ele não foi inicializado, vai apontar para um endereço de memória desconhecido, 
+causando problemas no programa.
+
+2) Executando o gdb, para verificar os endereços para onde buf aponta 
+
+(gdb) break sum_to_n
+Breakpoint 1 at 0x11e9: file c19.c, line 8.
+(gdb) display buf
+1: buf = 0x0
+
+Executando agora o Valgrind
+
+valgrind --leak-check=full --track-origins=yes ./c19.exe 
+
+enter a number:
+5
+==16824== Invalid write of size 1
+==16824==    at 0x48E6AE7: _IO_str_overflow (strops.c:133)
+==16824==    by 0x48E5023: _IO_default_xsputn (genops.c:399)
+==16824==    by 0x48E5023: _IO_default_xsputn (genops.c:370)
+==16824==    by 0x48C9971: __vfprintf_internal (vfprintf-internal.c:1373)
+==16824==    by 0x48D80F8: __vsprintf_internal (iovsprintf.c:95)
+==16824==    by 0x48B4EC7: sprintf (sprintf.c:30)
+==16824==    by 0x10929C: printSum (c19.c:22)
+==16824==    by 0x1092D4: main (c19.c:28)
+==16824==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==16824== 
+==16824== 
+==16824== Process terminating with default action of signal 11 (SIGSEGV)
+==16824==  Access not within mapped region at address 0x0
+==16824==    at 0x48E6AE7: _IO_str_overflow (strops.c:133)
+==16824==    by 0x48E5023: _IO_default_xsputn (genops.c:399)
+==16824==    by 0x48E5023: _IO_default_xsputn (genops.c:370)
+==16824==    by 0x48C9971: __vfprintf_internal (vfprintf-internal.c:1373)
+==16824==    by 0x48D80F8: __vsprintf_internal (iovsprintf.c:95)
+==16824==    by 0x48B4EC7: sprintf (sprintf.c:30)
+==16824==    by 0x10929C: printSum (c19.c:22)
+==16824==    by 0x1092D4: main (c19.c:28)
+==16824==  If you believe this happened as a result of a stack
+==16824==  overflow in your program's main thread (unlikely but
+==16824==  possible), you can try to increase the size of the
+==16824==  main thread stack using the --main-stacksize= flag.
+==16824==  The main thread stack size used in this run was 8388608.
+==16824== 
+==16824== HEAP SUMMARY:
+==16824==     in use at exit: 0 bytes in 0 blocks
+==16824==   total heap usage: 2 allocs, 2 frees, 2,048 bytes allocated
+==16824== 
+==16824== All heap blocks were freed -- no leaks are possible
+==16824==
+==16824== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+Segmentation fault
+
+Percebemos que, juntos, esses dois programas querem dizer que está acontecendo um erro de 
+segmentation fault, quando ocorre o acesso pela função sprintf.
+
+3) Para corrigir o erro, iremos inicializar o ponteiro buf por meio de alocação dinâmica. Como a 
+linha disponibilizada para os usuários recebe até 10 caracteres, esse será o tamanho de bytes para
+o qual vamos fazer a alocação.
+
+4) Executando o gdb no projeto corrigido
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c19correto.exe 
+enter a number:
+5
+sum=15
+[Inferior 1 (process 17434) exited normally]
+
+Já com o Valgrind
+
+valgrind --leak-check=full --track-origins=yes ./c19correto.exe 
+
+enter a number:
+5
+sum=15
+==17782== 
+==17782== HEAP SUMMARY:
+==17782==     in use at exit: 0 bytes in 0 blocks
+==17782==   total heap usage: 3 allocs, 3 frees, 2,058 bytes allocated
+==17782== 
+==17782== All heap blocks were freed -- no leaks are possible
+==17782==
+==17782== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
