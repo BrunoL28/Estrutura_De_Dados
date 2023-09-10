@@ -1,0 +1,51 @@
+1) No código em questão, temos dois problemas. O primeiro deles é que está sendo feita a alocação de 40
+bytes para x, mas na linha que vem em seguida, ocorre a tentativa de acessar uma posição inválida de x,
+que é a décima-primeira posição. Vale lembrar que a contagem de posições ocorre a partir de zero, por 
+isso, ao acessar o índice 10 de um vetor ([10]), estamos acessando sua 11ª primeira posição, que nesse 
+caso é um endereço de memória inválido. O outro problema é a ausência da função free(), que serve para 
+liberara a memória que foi alocada dinamicamente para x.
+
+2) Executando o Valgrind no código incorreto, para confirmar os apontamentos do tópico 1
+
+valgrind --leak-check=full ./c9.exe 
+
+==28705== Invalid write of size 4
+==28705==    at 0x10916B: f (c9.c:6)
+==28705==    by 0x109180: main (c9.c:12)
+==28705==  Address 0x4a48068 is 0 bytes after a block of size 40 alloc'd
+==28705==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28705==    by 0x10915E: f (c9.c:5)
+==28705==    by 0x109180: main (c9.c:12) 
+==28705== 
+==28705== HEAP SUMMARY:
+==28705==     in use at exit: 40 bytes in 1 blocks
+==28705==   total heap usage: 1 allocs, 0 frees, 40 bytes allocated
+==28705== 
+==28705== 40 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==28705==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28705==    by 0x10915E: f (c9.c:5)
+==28705==    by 0x109180: main (c9.c:12)
+==28705== 
+==28705== LEAK SUMMARY:
+==28705==    definitely lost: 40 bytes in 1 blocks
+==28705==    indirectly lost: 0 bytes in 0 blocks
+==28705==      possibly lost: 0 bytes in 0 blocks
+==28705==    still reachable: 0 bytes in 0 blocks
+==28705==         suppressed: 0 bytes in 0 blocks
+==28705==
+==28705== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+
+3) Para corrigir o código, basta alocar 11 posições para x, além de liberar a memória alocada posteriormente.
+
+4) Executando o Valgrind no código após a correção, para confirmar se está tudo certo
+
+valgrind --leak-check=full ./c9corrigido.exe 
+
+==29063== 
+==29063== HEAP SUMMARY:
+==29063==     in use at exit: 0 bytes in 0 blocks
+==29063==   total heap usage: 1 allocs, 1 frees, 44 bytes allocated
+==29063== 
+==29063== All heap blocks were freed -- no leaks are possible
+==29063==
+==29063== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
