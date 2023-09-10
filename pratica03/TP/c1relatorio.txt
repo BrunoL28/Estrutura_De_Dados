@@ -1,0 +1,35 @@
+1) O código em questão aloca, dinamicamente, uma variável com o tamanho de 40 bytes
+que é o tamanho de um int (4 bytes) * 10. Contudo, no loop criado após a alocação, o 
+iterador percorre até 11 posições, causando uma invasão de memória, já que a variável
+acessa 44 bytes, ao contrário dos 40 alocados à princípio.
+
+2) Testando o código com o Valgrind
+
+valgrind --leak-check=full ./c1.exe
+
+==4687== Invalid write of size 4
+==4687==    at 0x1091B8: main (c1.c:9)
+==4687==  Address 0x4a48068 is 0 bytes after a block of size 40 alloc'd
+==4687==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4687==    by 0x109185: main (c1.c:6)
+==4687== 
+==4687== HEAP SUMMARY:
+==4687==     in use at exit: 0 bytes in 0 blocks
+==4687==   total heap usage: 1 allocs, 1 frees, 40 bytes allocated
+
+==4687== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+3) Correção do código
+
+Alteração do limite máximo de iterações de 11 ( i < 11 ) para 10 ( i < 10 ).
+
+4) Testando o código com o Valgrind após correção 
+
+==5226== HEAP SUMMARY:
+==5226==     in use at exit: 0 bytes in 0 blocks
+==5226==   total heap usage: 1 allocs, 1 frees, 40 bytes allocated
+==5226== 
+==5226== All heap blocks were freed -- no leaks are possible
+==5226== 
+==5226== For lists of detected and suppressed errors, rerun with: -s
+==5226== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
