@@ -1,0 +1,131 @@
+1) No código em questão, temos dois problemas. O primeiro deles é que ocorre uma alocação infinita de 
+memória para p, já que o loop sempre será verdadeiro, então não terá ponto de parada, e ainda serão 
+alocados 128 bytes por vez. Além disso, outro problema que ocorre nesse código é a ausência de liberação
+da memória que foi reservada para p. Tudo isso culmina em um colapso para o sistema, que estará consumindo
+uma quantidade enorme de memória sem desalocar nem um byte.
+
+2) Executando o Valgrind no código incorreto, para ver se os apontamentos feitos acima são válidos
+
+valgrind --check-leak=full ./c10.exe 
+
+==882== Process terminating with default action of signal 2 (SIGINT)
+==882==    at 0x4961075: write (write.c:26)
+==882==    by 0x48E1E8C: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1181)
+==882==    by 0x48E3950: new_do_write (fileops.c:449)
+==882==    by 0x48E3950: _IO_new_do_write (fileops.c:426)
+==882==    by 0x48E3950: _IO_do_write@@GLIBC_2.2.5 (fileops.c:423)
+==882==    by 0x48E26B4: _IO_new_file_xsputn (fileops.c:1244)
+==882==    by 0x48E26B4: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+==882==    by 0x48C9FE5: __vfprintf_internal (vfprintf-internal.c:1719)
+==882==    by 0x48B4D3E: printf (printf.c:33)
+==882==    by 0x10919A: main (c10.c:8)
+==882== 
+==882== HEAP SUMMARY:
+==882==     in use at exit: 11,175,936 bytes in 87,312 blocks
+==882==   total heap usage: 87,313 allocs, 1 frees, 11,176,960 bytes allocated
+==882== 
+==882== 11,175,808 bytes in 87,311 blocks are definitely lost in loss record 2 of 2
+==882==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==882==    by 0x10917E: main (c10.c:7)
+==882== 
+==882== LEAK SUMMARY:
+==882==    definitely lost: 11,175,808 bytes in 87,311 blocks
+==882==    indirectly lost: 0 bytes in 0 blocks
+==882==      possibly lost: 0 bytes in 0 blocks
+==882==    still reachable: 128 bytes in 1 blocks
+==882==         suppressed: 0 bytes in 0 blocks
+==882== Reachable blocks (those to which a pointer was found) are not shown.
+==882== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==882==
+==882== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+Executando o gdb no código incorreto, vemos que realmente é algo muito grande, e que nunca acaba
+
+(gdb) break main
+Breakpoint 1 at 0x1169: file c10.c, line 4.
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c10.exe 
+
+Breakpoint 1, main () at c10.c:4
+4       int main(void) {    
+(gdb) next
+7               p = malloc(128);
+(gdb) next
+8               printf("%ld\n", (long)p);
+(gdb) next
+93824992252576
+7               p = malloc(128);
+(gdb) next
+8               printf("%ld\n", (long)p);
+(gdb) next
+93824992253760
+7               p = malloc(128);
+(gdb) next
+8               printf("%ld\n", (long)p);
+(gdb) next
+93824992253904
+7               p = malloc(128);
+(gdb) next
+8               printf("%ld\n", (long)p);
+(gdb) next
+93824992254048
+7               p = malloc(128);
+(gdb) next
+8               printf("%ld\n", (long)p);
+(gdb) next
+93824992254192
+7               p = malloc(128);
+
+3) A correção para o código é definir uma condição de parada para o loop, além de implementar a liberação 
+da memória.
+
+4) Executando o Valgrind no código correto, para ver se as correções resolveram o problema
+
+valgrind --check-leak=full ./c10correto.exe  
+
+==2807== HEAP SUMMARY:
+==2807==     in use at exit: 0 bytes in 0 blocks
+==2807==   total heap usage: 2 allocs, 2 frees, 1,152 bytes allocated
+==2807== 
+==2807== All heap blocks were freed -- no leaks are possible
+==2807==
+==2807== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+Executando o gdb no código correto, percebemos que o problema das iterações infinitas foi resolvido, agora
+só são feitas 32.
+
+(gdb) run
+Starting program: /home/bruno_lima/EstruturadDeDados/Estrutura_De_Dados/pratica03/TP/c10correto.exe 
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+93824992252576
+[Inferior 1 (process 2649) exited normally]
