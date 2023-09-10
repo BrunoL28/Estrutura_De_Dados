@@ -1,0 +1,37 @@
+1) O problema no código em questão, está no fato de que o laço for irá iterar 27 vezes, o que causará 
+problemas na operação executada em seu escopo, já que source foi alocado, dinamicamente, com apenas 
+26 bytes. Dessa forma, na última execução do loop for, ocorrerá o acesso à uma posição de memória 
+inválida.
+
+2) Executando o Valgrind no código incorreto para verificar os problemas
+
+valgrind --leak-check=full ./c8.exe 
+
+==27095== Invalid read of size 1
+==27095==    at 0x1091D2: main (c8.c:9)
+==27095==  Address 0x4a480ba is 0 bytes after a block of size 26 alloc'd
+==27095==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27095==    by 0x1091B1: main (c8.c:6)
+==27095== 
+==27095== HEAP SUMMARY:
+==27095==     in use at exit: 0 bytes in 0 blocks
+==27095==   total heap usage: 2 allocs, 2 frees, 53 bytes allocated
+==27095== 
+==27095== All heap blocks were freed -- no leaks are possible
+==27095==
+==27095== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+3) A correção para o problema em questão é alocar, para o array de char source, 27 bytes.
+
+4) Executando o Valgrind no código com correção, para ver se o problema foi resolvido
+
+valgrind --leak-check=full ./c8corrigido.exe 
+
+==27302== HEAP SUMMARY:
+==27302==     in use at exit: 0 bytes in 0 blocks
+==27302==   total heap usage: 2 allocs, 2 frees, 54 bytes allocated
+==27302== 
+==27302== All heap blocks were freed -- no leaks are possible
+==27302== 
+==27302== For lists of detected and suppressed errors, rerun with: -s
+==27302== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
